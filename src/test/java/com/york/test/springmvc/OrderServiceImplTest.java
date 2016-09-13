@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.io.InvalidObjectException;
 import java.util.Map;
+import java.util.Set;
 
 import com.york.springmvc.configuration.*;
 import com.york.springmvc.model.Order;
@@ -45,6 +46,7 @@ public class OrderServiceImplTest {
 
 	@Before
 	public void setUp() throws Exception {
+		assertNotNull(orderService);
 	}
 
 	@After
@@ -53,17 +55,28 @@ public class OrderServiceImplTest {
 
 	@Test
 	public final void testSendOrder() {
-		
 		Order order = new Order();
-		order.setProductName("MyFirstProd");
+		String name="MyFirstProd";
+		order.setProductName(name);
 		order.setQuantity(1);
-		//OrderService orderService= new OrderServiceImpl();
 		orderService.sendOrder(order);
-				
 		Map<String, Order> orders=orderService.getAllOrders();
-		assertTrue((orders!=null) && orders.size()>1);
+		
+		Order order_= getOrderByname(name,orders);
+		assertNotNull(order_);
+		assertEquals(name, order_.getProductName());
 	}
 
+	public final Order getOrderByname(String Name,Map<String, Order> orders) {
+		Set<String> keys=orders.keySet();
+		for (String key : keys) {
+			Order order_=orders.get(key);
+			if (order_.getProductName().equals(Name)) return order_;
+		}
+		return null;
+	}
+		
+	
 	//@Test(expected = InvalidObjectException.class)
 	public final void testUpdateOrder() {
 		
@@ -72,7 +85,8 @@ public class OrderServiceImplTest {
 
 	@Test
 	public final void testGetAllOrders() {
-		//fail("Not yet implemented"); // TODO
+		Map<String, Order> orders=orderService.getAllOrders();
+		assertNotNull(orders);
 	}
 
 }
