@@ -4,17 +4,22 @@ import java.util.Arrays;
 
 import org.apache.activemq.RedeliveryPolicy;
 import org.apache.activemq.spring.ActiveMQConnectionFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.jms.core.JmsTemplate;
 
 @Configuration
+@PropertySource("classpath:application.properties")
 public class MessagingConfiguration {
 
-	private static final String DEFAULT_BROKER_URL = "tcp://192.168.12.2:61616";
+	@Value("${mdp.jms.url}")
+	private String DEFAULT_BROKER_URL;
 	
-	private static final String ORDER_QUEUE = "order-queue";
-
+	@Value("${myApp.jms.inbound.queue.name}")
+	private String ORDER_QUEUE;
+	
 	@Bean
 	public ActiveMQConnectionFactory connectionFactory(){
 
